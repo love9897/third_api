@@ -34,10 +34,14 @@ class Authcontroller extends Controller
 
         if ($token && $partner_token) {
 
+            $data = $request->all();
+
+            $data['isPrepaid'] = filter_var($data['isPrepaid'], FILTER_VALIDATE_BOOLEAN);
+            $data['isTracking'] = filter_var($data['isTracking'], FILTER_VALIDATE_BOOLEAN);
+            $data['isMultiPacket'] = filter_var($data['isMultiPacket'], FILTER_VALIDATE_BOOLEAN);
+            $data['isAirwayBillRequired'] = filter_var($data['isAirwayBillRequired'], FILTER_VALIDATE_BOOLEAN);
 
             $curl = curl_init();
-
-            // dd($request->all());
 
             curl_setopt_array(
                 $curl,
@@ -50,7 +54,7 @@ class Authcontroller extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => $request->all(),
+                    CURLOPT_POSTFIELDS => json_encode($data),
                     CURLOPT_HTTPHEADER => array(
                         'Partner-Token: ' . $partner_token,
                         'Content-Type: application/json',
@@ -63,9 +67,16 @@ class Authcontroller extends Controller
 
             curl_close($curl);
 
-            dd($response);
+            $response = json_decode($response);
 
-            return response()->json(['is_sucess' => true, 'data' => $response]);
+            if ($response->isSuccessful) {
+
+                return response()->json(['is_sucess' => true]);
+            } else {
+
+                return response()->json(['is_sucess' => false]);
+            }
+            
         } else {
             return response()->json(['is_sucess' => false]);
         }
