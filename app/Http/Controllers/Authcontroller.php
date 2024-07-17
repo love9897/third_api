@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 
@@ -69,14 +70,24 @@ class Authcontroller extends Controller
 
             $response = json_decode($response);
 
+        
+            // dd($response);
             if ($response->isSuccessful) {
 
+                Product::create([
+                    'currency' => $response->data->currency,
+                    'trackingNumber' => $response->data->trackingNumber,
+                    'codeAmount' => $response->data->codAmount,
+                    'base64' => $response->data->base64
+                ]);
+
                 return response()->json(['is_sucess' => true]);
+
             } else {
 
                 return response()->json(['is_sucess' => false]);
             }
-            
+
         } else {
             return response()->json(['is_sucess' => false]);
         }
