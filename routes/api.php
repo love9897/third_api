@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('data', [Authcontroller::class, 'fetchData']);
+
+Route::get('productList', [Authcontroller::class, 'productList']);

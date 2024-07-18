@@ -13,15 +13,8 @@ class Authcontroller extends Controller
      */
     public function index()
     {
-        $url = 'https://web.qatarpost.qa/PartnerAPIAWB/get/token';
-
-        $token = getAuthToken($url);
-
-        $p = getPartnerToken($token);
-
-        echo $token;
-        echo "<br>";
-        echo $p;
+        $product = Product::all();
+        return view('productList', ['product' => $product]);
     }
 
 
@@ -70,8 +63,6 @@ class Authcontroller extends Controller
 
             $response = json_decode($response);
 
-        
-            // dd($response);
             if ($response->isSuccessful) {
 
                 Product::create([
@@ -96,6 +87,7 @@ class Authcontroller extends Controller
 
 
 
+
     public function create()
     {
         //
@@ -106,6 +98,58 @@ class Authcontroller extends Controller
      */
     public function store(Request $request)
     {
+        $tracking = $request->tracking;
+
+        $url = 'https://web.qatarpost.qa/PartnerAPIAWB/get/token';
+
+        $token = getAuthToken($url);
+
+        $partner_token = getPartnerToken($token);
+
+        if ($tracking) {
+
+            $curl = curl_init();
+
+            curl_setopt_array(
+                $curl,
+                array(
+                    CURLOPT_URL => 'https://web.qatarpost.qa/PartnerAPIAWB/partner/order/' . $tracking,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_HTTPHEADER => array(
+                        'Partner-Token: ' . $partner_token,
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $token
+                    ),
+                )
+            );
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            $data = json_decode($response);
+
+            if ($data->trackingList) {
+
+                $html = view('orderDetails', ['order' => $data->trackingList])->render();
+
+                return response()->json(['is_success' => true, 'html' => $html]);
+
+            } else {
+
+                return response()->json(['is_success' => false]);
+            }
+
+        } else {
+            return response()->json(['is_success' => false]);
+        }
+
 
     }
 
