@@ -13,11 +13,16 @@ class Authcontroller extends Controller
      */
     public function index()
     {
-        $product = Product::all();
+        $product = Product::paginate(4);
         return view('productList', ['product' => $product]);
     }
 
-
+    public function pagination()
+    {
+        $product = Product::paginate(4);
+        $html = view('pagination_products', ['product' => $product])->render();
+        return response()->json(['is_success' => true, 'html' => $html]);
+    }
     public function fetchData(Request $request)
     {
         $url = 'https://web.qatarpost.qa/PartnerAPIAWB/get/token';
@@ -158,7 +163,8 @@ class Authcontroller extends Controller
      */
     public function show(string $id)
     {
-        return view('updateDetails', ['trackingNumber' => $id]);
+        $product = Product::where('trackingNumber', '=', $id)->first();
+        return view('updateForm', ['trackingNumber' => $id, 'product' => $product], );
     }
 
     /**
@@ -189,7 +195,6 @@ class Authcontroller extends Controller
 
 
         if ($id) {
-
 
             $curl = curl_init();
 

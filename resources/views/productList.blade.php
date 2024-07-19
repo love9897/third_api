@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
     <style>
-        .modal-content{
+        .modal-content {
             width: 900px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container table-data">
         <table class="table">
             <thead>
                 <tr>
@@ -22,7 +22,16 @@
                     <th scope="col">Currency</th>
                     <th scope="col">TrackingNumber</th>
                     <th scope="col">codeAmount</th>
-
+                    <th scope="col">Delivery_Zone</th>
+                    <th scope="col">Delivery_street</th>
+                    <th scope="col">Delivery_BuildingNo</th>
+                    <th scope="col">Delivery_UnitNo</th>
+                    <th scope="col">Pickup_Zone</th>
+                    <th scope="col">Pickup_Street</th>
+                    <th scope="col">Pickup_Building</th>
+                    <th scope="col">Pickup_UnitNo</th>
+                    <th scope="col">location_Details</th>
+                    <th scope="col">Destination_Country</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -35,6 +44,16 @@
                         <td>{{ $value->currency }}</td>
                         <td>{{ $value->trackingNumber }}</td>
                         <td>{{ $value->codeAmount }}</td>
+                        <td>{{ $value->delivery_Zone }}</td>
+                        <td>{{ $value->delivery_Street }}</td>
+                        <td>{{ $value->delivery_BuildingNo }}</td>
+                        <td>{{ $value->delivery_UnitNo }}</td>
+                        <td>{{ $value->pickup_Zone }}</td>
+                        <td>{{ $value->pickup_Street }}</td>
+                        <td>{{ $value->pickup_Building }}</td>
+                        <td>{{ $value->pickup_UnitNo }}</td>
+                        <td>{{ $value->location_Details }}</td>
+                        <td>{{ $value->destinationCountry }}</td>
                         <td><button data-trackingnumber="{{ $value->trackingNumber }}" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal" class="btn btn-info status">
                                 Status
@@ -42,24 +61,13 @@
                         </td>
                     </tr>
                 @endforeach
+
             </tbody>
+
         </table>
+        {{ $product->links() }}
     </div>
 </body>
-
-<script src="{{ asset('assets/js/jquery.js') }}"></script>
-<script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
-<script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-    });
-</script>
-
-<script src="{{ asset('assets/js/scripts.js') }}"></script>
-
-</html>
 
 
 <!-- Modal -->
@@ -80,3 +88,19 @@
         </div>
     </div>
 </div>
+
+
+<script src="{{ asset('assets/js/jquery.js') }}"></script>
+<script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+    });
+    var base_url = '{{ url('') }}';
+</script>
+
+<script src="{{ asset('assets/js/scripts.js') }}"></script>
+
+</html>
