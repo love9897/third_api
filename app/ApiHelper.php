@@ -5,8 +5,6 @@
 function getAuthToken($url)
 {
 
-
-
     $curl = curl_init();
 
     curl_setopt_array(
@@ -35,9 +33,6 @@ function getAuthToken($url)
     $data = json_decode($response, true);
 
     curl_close($curl);
-
-    $_SESSION['token'] = $data['token'];
-    $_SESSION['userName'] = $data['userName'];
 
     return $data['token'];
 
@@ -69,7 +64,7 @@ function getPartnerToken($token)
     $response = curl_exec($curl);
 
     $data = json_decode($response, true);
-    
+
     curl_close($curl);
 
     return $data['data'];

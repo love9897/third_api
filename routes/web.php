@@ -19,3 +19,5 @@ Route::get('/', function () {
 });
 
 Route::resource('user', Authcontroller::class);
+
+Route::post('update/{id}', [Authcontroller::class, 'updateData']);

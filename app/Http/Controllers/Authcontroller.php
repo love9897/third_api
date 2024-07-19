@@ -158,7 +158,7 @@ class Authcontroller extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('updateDetails', ['trackingNumber' => $id]);
     }
 
     /**
@@ -172,9 +172,80 @@ class Authcontroller extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, string $id)
     {
-        //
+
+    }
+    public function updateData(Request $request, $id)
+    {
+
+
+        $url = env('GET_TOKEN');
+
+        $token = getAuthToken($url);
+
+        $partner_token = getPartnerToken($token);
+
+
+        if ($id) {
+
+
+            $curl = curl_init();
+
+            curl_setopt_array(
+                $curl,
+                array(
+                    CURLOPT_URL => env('TRACK_ORDER') . $id . '/Update',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'PUT',
+                    CURLOPT_POSTFIELDS => json_encode($request->all()),
+                    CURLOPT_HTTPHEADER => array(
+                        'Partner-Token: ' . $partner_token,
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $token
+                    ),
+                )
+            );
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            $data = json_decode($response);
+
+            if ($data->isSuccessful) {
+                Product::where('trackingNumber', '=', $id)
+                    ->update([
+                        'delivery_Zone' => $request->delivery_Zone,
+                        'delivery_Street' => $request->delivery_Street,
+                        'delivery_BuildingNo' => $request->delivery_BuildingNo,
+                        'delivery_UnitNo' => $request->delivery_UnitNo,
+                        'pickup_Zone' => $request->pickup_Zone,
+                        'pickup_Street' => $request->pickup_Street,
+                        'pickup_Building' => $request->pickup_Building,
+                        'pickup_UnitNo' => $request->pickup_UnitNo,
+                        'location_Details' => $request->location_Details,
+                        'destinationCountry' => $request->destinationCountry,
+                        'address1' => $request->address1,
+                        'address2' => $request->address2,
+                        'zipCode' => $request->zipCode
+                    ]);
+
+                return back()->with('success', 'Data updated successfully');
+
+            } else {
+
+                return back()->with('error', 'Data not updated');
+            }
+
+        }
+
     }
 
     /**

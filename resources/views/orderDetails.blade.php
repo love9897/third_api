@@ -9,6 +9,7 @@
             <th scope="col">description</th>
             <th scope="col">location</th>
             <th scope="col">time</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -38,7 +39,6 @@
                 <td>{{ $value->codInfo }}</td>
                 <td>{{ $value->country }}</td>
                 @foreach ($item as $k => $v)
-                
                     @if ($k == $value->code)
                         <td>{{ $v }}</td>
                     @endif
@@ -48,6 +48,7 @@
                 <td>{{ $value->description }}</td>
                 <td>{{ $value->location }}</td>
                 <td>{{ $value->time }}</td>
+                <td><a href="{{ url('user/' . $value->trackingNumber) }}" class="btn btn-info">Edit</a></td>
             </tr>
         @endforeach
     </tbody>
