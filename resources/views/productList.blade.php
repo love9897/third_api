@@ -11,6 +11,9 @@
             width: 900px;
         }
     </style>
+    <script>
+        let base_url = "{{ url('') }}";
+    </script>
 </head>
 
 <body>

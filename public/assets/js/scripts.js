@@ -7,7 +7,7 @@ $(document).ready(function () {
    
         $.ajax({
             type: 'POST',
-            url: 'http://127.0.0.1:8000/user',
+            url: base_url+'user',
             data : {'tracking': tracking},
             success: function (data){
                 let response = data;
